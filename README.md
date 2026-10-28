@@ -104,6 +104,8 @@ The valley's multiplayer needs a running Node process, so deploy to something li
 - **Build command:** `npm install && npm run build`
 - **Start command:** `npm start`
 
+- **Health check path:** `/healthz` (returns `{"status":"ok"}`)
+
 The server reads `$PORT`. Visitor state is in memory, so a restart just makes everyone reconnect.
 
 To host the pages statically elsewhere (e.g. Netlify) and run only the socket on a Node host, build with

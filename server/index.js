@@ -12,6 +12,7 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/cs
 const server = http.createServer(async (req, res) => {
   try {
     const path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+    if (path === '/healthz') return res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }).end('{"status":"ok"}'); // for host health checks
     if (!extname(path) && !path.endsWith('/')) return res.writeHead(301, { location: path + '/' }).end(); // /valley -> /valley/
     const file = resolve(dist, '.' + (path.endsWith('/') ? path + 'index.html' : path));
     if (!file.startsWith(dist)) throw 0; // no escaping dist/
