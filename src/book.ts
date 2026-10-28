@@ -18,9 +18,10 @@ export function openBook(p: Project) {
     media.replaceChildren(Object.assign(document.createElement('div'), { className: 'none', textContent: 'No demo reel yet. Open the page to see it live!' }));
   }
   book.style.display = 'flex';
+  document.body.classList.add('reading');
 }
 
-export function closeBook() { book.style.display = 'none'; media.replaceChildren(); }
+export function closeBook() { book.style.display = 'none'; media.replaceChildren(); document.body.classList.remove('reading'); }
 
 /** Keyboard while the book is open: E / Esc close, W/S or arrows scroll the description. */
 export function bookKey(e: KeyboardEvent) {

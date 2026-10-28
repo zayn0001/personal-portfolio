@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Mishal's Valley</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
@@ -13,6 +13,10 @@
   <a id="homebtn" class="wood" href="/">&larr; Home</a>
   <div id="clock" class="wood"><div id="cdate"></div><div id="ctime"></div></div>
   <canvas id="map"></canvas>
+
+  <!-- touch controls (shown only on touchscreens, see style.css) -->
+  <div id="stick" aria-hidden="true"><div id="knob"></div></div>
+  <button id="act" aria-label="Read sign">READ</button>
 
   <div id="loading">
     <canvas id="walker" width="16" height="28"></canvas>
@@ -28,7 +32,8 @@
       <label for="name">What's your name?</label>
       <input id="name" maxlength="20" required autocomplete="off">
       <button>Enter town</button>
-      <small>WASD / arrows to walk · E or Space to read signs</small>
+      <small class="keys-only">WASD / arrows to walk · E or Space to read signs</small>
+      <small class="touch-only">Drag the joystick to walk · tap READ at a sign</small>
       <a class="back" href="/">&larr; back to portfolio</a>
     </div>
   </form>

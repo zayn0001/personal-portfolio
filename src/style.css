@@ -48,8 +48,9 @@ html,body{margin:0;height:100%;overflow:hidden;background:#24572a;font-family:'V
   background:linear-gradient(#e0623f,#c0442b);box-shadow:inset 0 3px 0 #f2937a,inset 0 -5px 0 #8a2a1a,3px 3px 0 #0006}
 #bclose:active{box-shadow:inset 0 -2px 0 #8a2a1a,inset 0 3px 0 #8a2a1a,1px 1px 0 #0006}
 #bclose svg{width:20px;height:20px;fill:#fff;margin-top:-2px;filter:drop-shadow(2px 2px 0 #6e1f12)}
-@media (max-width:760px){#book .cover{grid-template-columns:1fr;grid-template-rows:auto auto;height:auto;max-height:100%;overflow-y:auto}
-  #book .left,#book .right{border-radius:6px}#bdesc{overflow:visible}}
+@media (max-width:760px){#book .cover{grid-template-columns:1fr;grid-template-rows:auto auto;height:auto;max-height:100%;overflow-y:auto;overflow-x:hidden}
+  #book .left,#book .right{border-radius:6px}#bdesc{overflow:visible}
+  #bclose{top:4px;right:4px;width:42px;height:42px} /* the cover scrolls here, so keep the button inside it */}
 
 #loading{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
   background:#1d3b1d;color:#ffe9a8;font-size:34px;text-shadow:3px 3px 0 #0008}
@@ -61,3 +62,42 @@ html,body{margin:0;height:100%;overflow:hidden;background:#24572a;font-family:'V
 #loading .dots::after{content:'';animation:dots 1.2s steps(4) infinite}
 @keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
 #intro .back{font-size:20px;color:#7a5530}
+
+/* ---- touch controls: only on touchscreens, only while playing, hidden while reading */
+#stick,#act{display:none;position:fixed;z-index:5;touch-action:none;-webkit-user-select:none;user-select:none}
+.touch.playing:not(.reading) #stick,.touch.playing:not(.reading) #act{display:block}
+#stick{left:calc(22px + env(safe-area-inset-left));bottom:calc(26px + env(safe-area-inset-bottom));width:132px;height:132px;border-radius:50%;
+  background:radial-gradient(circle,#fff1 40%,#fff3);border:3px solid #fff6;box-shadow:0 0 0 3px #0002;transition:opacity .2s;opacity:.7}
+#stick.held{opacity:1}
+#knob{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px;border-radius:50%;background:#fffa;border:3px solid #5b2e10aa;box-shadow:0 3px 0 #0004}
+#act{right:calc(26px + env(safe-area-inset-right));bottom:calc(46px + env(safe-area-inset-bottom));width:96px;height:96px;border-radius:50%;
+  font:inherit;font-size:28px;color:#fff;background:#0004;border:3px solid #fff5;opacity:.6;transition:opacity .2s,transform .06s}
+#act.ready{opacity:1;color:#3b1f0e;background:#f4d49a;border-color:#5b2e10;box-shadow:inset 0 0 0 3px #e7a24a,0 4px 0 #0006;animation:nudge 1.2s ease-in-out infinite}
+#act:active{transform:scale(.94)}
+@keyframes nudge{50%{transform:scale(1.07)}}
+.touch-only{display:none}
+.touch .touch-only{display:inline}.touch .keys-only{display:none}
+
+/* ---- small screens */
+@media (max-width:640px){
+  #hud{left:calc(8px + env(safe-area-inset-left));top:calc(8px + env(safe-area-inset-top));font-size:20px;padding:2px 10px}
+  #homebtn{left:calc(8px + env(safe-area-inset-left));top:calc(48px + env(safe-area-inset-top));font-size:20px;padding:0 10px}
+  #clock{right:calc(8px + env(safe-area-inset-right));top:calc(8px + env(safe-area-inset-top));font-size:20px;min-width:86px;padding:2px 10px}
+  #map{right:calc(8px + env(safe-area-inset-right));top:calc(72px + env(safe-area-inset-top))}
+  #intro{gap:12px;padding:16px}
+  #intro h1{font-size:clamp(48px,16vw,80px)}
+  #intro .wood{padding:14px 18px;font-size:22px;max-width:100%}
+  #intro input{width:min(240px,70vw);font-size:28px}
+  #book{padding:14px}
+  #btitle{font-size:36px}
+  #bdesc{font-size:23px;line-height:28px}
+  #bopen{font-size:28px;align-self:stretch;justify-content:center}
+}
+@media (max-height:500px) and (orientation:landscape){ /* phones on their side */
+  #intro{flex-direction:row;gap:24px}
+  #intro h1{font-size:56px}
+  #intro .wood{gap:6px;padding:10px 16px}
+  #preview{height:90px;width:52px;padding:4px 12px}
+  #book .cover{grid-template-columns:1fr 1fr;height:100%}
+  #bdesc{overflow-y:auto}
+}

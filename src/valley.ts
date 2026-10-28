@@ -20,12 +20,14 @@ function resize() {
 resize();
 addEventListener('resize', resize);
 mapCv.width = world.mini.width; mapCv.height = world.mini.height;
-mapCv.style.width = mapCv.width * 2 + 'px';
+mapCv.style.width = `min(${mapCv.width * 2}px, 36vw, 40vh)`; // stays small on phones, portrait or landscape
 
 const saved = localStorage.getItem('look');
 const me = { name: '', x: 4.5 * T, y: 15.9 * T, dir: 0, moving: false, walkT: 0, look: saved ? arrToLook(JSON.parse(saved)) : randomLook() };
 const stepOf = (walkT: number) => (walkT ? [0, 1, 0, 2][Math.floor(walkT * 8) % 4] : 0);
 let playing = false, near: Building | null = null;
+const touch = matchMedia('(pointer: coarse)').matches;
+if (touch) document.body.classList.add('touch');
 const live = connectLive(all => { hud.textContent = `● ${all.length} in town`; });
 
 // ---- loading screen until the backend says hello
@@ -39,7 +41,7 @@ live.ready.then(() => {
   clearInterval(walk); clearTimeout(slow);
   loader.remove();
   $('intro').style.display = 'flex';
-  $('name').focus();
+  if (!touch) $('name').focus(); // on phones this would pop the keyboard over the title screen
 });
 
 // ---- join
@@ -64,6 +66,7 @@ intro.onsubmit = e => {
   hud.style.display = mapCv.style.display = $('clock').style.display = $('homebtn').style.display = 'block';
   hud.textContent = '● 1 in town';
   playing = true;
+  document.body.classList.add('playing');
 };
 
 // ---- input
@@ -77,6 +80,26 @@ addEventListener('keydown', e => {
 addEventListener('keyup', e => { keys[e.code] = false; });
 addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 
+// ---- touch: analog joystick (left) + READ button (right)
+const joy = { x: 0, y: 0 };
+{
+  const stick = $('stick'), knob = $('knob'), R = 46;
+  const move = (e: PointerEvent) => {
+    const r = stick.getBoundingClientRect();
+    let x = e.clientX - (r.left + r.width / 2), y = e.clientY - (r.top + r.height / 2);
+    const d = Math.hypot(x, y);
+    if (d > R) { x *= R / d; y *= R / d; }
+    knob.style.transform = `translate(${x}px, ${y}px)`;
+    const m = Math.hypot(x, y) / R;
+    joy.x = m < 0.15 ? 0 : x / R; joy.y = m < 0.15 ? 0 : y / R; // small dead zone
+  };
+  const end = () => { joy.x = joy.y = 0; knob.style.transform = ''; stick.classList.remove('held'); };
+  stick.onpointerdown = e => { stick.setPointerCapture(e.pointerId); stick.classList.add('held'); move(e); };
+  stick.onpointermove = e => { if (stick.hasPointerCapture(e.pointerId)) move(e); };
+  stick.onpointerup = stick.onpointercancel = end;
+  $('act').onclick = () => { if (near && !bookOpen()) openBook(near.project); };
+}
+
 // feet hitbox 10x4 art px
 const blocked = (x: number, y: number) => [[-5, -4], [5, -4], [-5, -0.01], [5, -0.01]].some(([ox, oy]) => world.isSolid(x + ox, y + oy));
 
@@ -85,16 +108,19 @@ function update(dt: number) {
   if (playing && !bookOpen()) {
     dx = +!!(keys.KeyD || keys.ArrowRight) - +!!(keys.KeyA || keys.ArrowLeft);
     dy = +!!(keys.KeyS || keys.ArrowDown) - +!!(keys.KeyW || keys.ArrowUp);
+    if (!dx && !dy) { dx = joy.x; dy = joy.y; } // analog: push further, walk faster
   }
-  me.moving = !!(dx || dy);
+  const mag = Math.min(1, Math.hypot(dx, dy));
+  me.moving = mag > 0;
   if (me.moving) {
-    me.dir = dx && !dy ? (dx < 0 ? 1 : 2) : dy < 0 ? 3 : 0;
-    const k = (SPEED * dt) / Math.hypot(dx, dy);
+    me.dir = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 1 : 2) : dy < 0 ? 3 : 0;
+    const k = (SPEED * dt * mag) / Math.hypot(dx, dy);
     if (!blocked(me.x + dx * k, me.y)) me.x += dx * k;
     if (!blocked(me.x, me.y + dy * k)) me.y += dy * k;
-    me.walkT += dt;
+    me.walkT += dt * Math.max(mag, 0.5);
   } else me.walkT = 0;
   near = world.buildings.find(b => Math.hypot(me.x - b.door.x, me.y - b.door.y) < 1.3 * T || Math.hypot(me.x - b.sign.x, me.y - b.sign.y) < 1.6 * T) ?? null;
+  $('act').classList.toggle('ready', !!near);
   live.update(dt, me.x, me.y, me.dir, me.moving);
 }
 
@@ -153,7 +179,7 @@ function bubble(x: number, y: number) {
   g.fillStyle = '#fff8e6'; g.fillRect(x - s / 2, y - s, s, s);
   g.fillStyle = '#fff8e6'; g.fillRect(x - S, y, 2 * S, 2 * S);
   g.font = `${8 * S}px VT323, monospace`; g.fillStyle = '#b5462f'; g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.fillText('E', x, y - s / 2 + S / 2);
+  g.fillText(touch ? '!' : 'E', x, y - s / 2 + S / 2);
 }
 
 // Stardew-style date/time box, real local time
