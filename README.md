@@ -1,5 +1,9 @@
 # Mishal's Portfolio
 
+**Live:** [personal-portfolio-tc9w.onrender.com](https://personal-portfolio-tc9w.onrender.com/) · **Valley:** [/valley](https://personal-portfolio-tc9w.onrender.com/valley/)
+
+> Hosted on Render's free tier: if it's been idle, the first load can take up to a minute while the server wakes up.
+
 My personal portfolio, in two flavours built from the same project data:
 
 - **`/`**: a minimal, typewriter-style page listing my work.
