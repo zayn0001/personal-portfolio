@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mishal's Valley</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="hud" class="wood"></div>
+  <a id="homebtn" class="wood" href="/">&larr; Home</a>
+  <div id="clock" class="wood"><div id="cdate"></div><div id="ctime"></div></div>
+  <canvas id="map"></canvas>
+
+  <div id="loading">
+    <canvas id="walker" width="16" height="28"></canvas>
+    <div class="bar"><span></span></div>
+    <p><span id="lmsg">Loading</span><span class="dots"></span></p>
+  </div>
+
+  <form id="intro">
+    <h1>Mishal's<br>Valley</h1>
+    <div class="wood">
+      <canvas id="preview" width="16" height="28"></canvas>
+      <button type="button" id="reroll">&#127922; Randomize</button>
+      <label for="name">What's your name?</label>
+      <input id="name" maxlength="20" required autocomplete="off">
+      <button>Enter town</button>
+      <small>WASD / arrows to walk · E or Space to read signs</small>
+      <a class="back" href="/">&larr; back to portfolio</a>
+    </div>
+  </form>
+
+  <div id="book">
+    <div class="cover">
+      <button id="bclose" aria-label="Close"><svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/><rect x="0" y="7" width="1" height="1"/><rect x="1" y="0" width="1" height="1"/><rect x="1" y="1" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="1" y="6" width="1" height="1"/><rect x="2" y="1" width="1" height="1"/><rect x="2" y="2" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="2" y="5" width="1" height="1"/><rect x="3" y="2" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="3" y="4" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="4" y="3" width="1" height="1"/><rect x="4" y="4" width="1" height="1"/><rect x="5" y="1" width="1" height="1"/><rect x="5" y="2" width="1" height="1"/><rect x="5" y="4" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="6" y="0" width="1" height="1"/><rect x="6" y="1" width="1" height="1"/><rect x="6" y="5" width="1" height="1"/><rect x="6" y="6" width="1" height="1"/><rect x="7" y="0" width="1" height="1"/><rect x="7" y="6" width="1" height="1"/><rect x="7" y="7" width="1" height="1"/></svg></button>
+      <section class="page left">
+        <h2 id="btitle"></h2>
+        <div id="bdesc"></div>
+        <a id="bopen" target="_blank" rel="noopener">Visit site <svg viewBox="0 0 7 7" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="5" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="2" y="0" width="1" height="1"/><rect x="2" y="3" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="3" y="0" width="1" height="1"/><rect x="3" y="2" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="4" y="0" width="1" height="1"/><rect x="4" y="1" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="5" y="0" width="1" height="1"/><rect x="5" y="1" width="1" height="1"/><rect x="6" y="0" width="1" height="1"/><rect x="6" y="1" width="1" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="6" y="3" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/></svg></a>
+      </section>
+      <section class="page right" id="bmedia"></section>
+    </div>
+  </div>
+  <script type="module" src="/src/valley.ts"></script>
+</body>
+</html>

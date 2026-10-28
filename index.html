@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mishal — Portfolio</title>
+  <meta name="description" content="Projects by Mishal.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap">
+</head>
+<body>
+  <main>
+    <header>
+      <h1><span id="type" aria-label="Mishal"></span><span class="caret" aria-hidden="true"></span></h1>
+      <p class="tag">Projects, experiments and tools I've built.</p>
+      <nav>
+        <a href="https://github.com/zayn0001" target="_blank" rel="noopener">github</a>
+        <a class="valley" href="/valley/">explore the valley &rarr;</a>
+      </nav>
+    </header>
+
+    <section>
+      <h2>Selected work</h2>
+      <ol id="projects"></ol>
+    </section>
+
+    <footer>
+      <span>&copy; <span id="year"></span> Mishal</span>
+      <a href="/valley/">prefer pixels? &rarr;</a>
+    </footer>
+  </main>
+
+  <dialog id="lightbox" tabindex="-1">
+    <button id="lbclose" aria-label="Close video">&times;</button>
+    <video controls playsinline></video>
+  </dialog>
+  <script type="module" src="/src/home.ts"></script>
+</body>
+</html>
