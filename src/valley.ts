@@ -1,5 +1,5 @@
 import './style.css';
-import { projects } from './projects';
+import { fetchProjects } from './projects';
 import { buildWorld, T, type Building } from './world';
 import { arrToLook, charFrame, drawChar, lookToArr, randomLook } from './sprites';
 import { openBook, bookOpen, bookKey } from './book';
@@ -8,7 +8,7 @@ import { connectLive } from './live';
 const $ = <E extends HTMLElement>(id: string) => document.getElementById(id) as E;
 const cv = $<HTMLCanvasElement>('game'), g = cv.getContext('2d')!;
 const mapCv = $<HTMLCanvasElement>('map'), mg = mapCv.getContext('2d')!;
-const world = buildWorld(projects);
+const world = buildWorld(await fetchProjects()); // one house per public GitHub repo
 const SPEED = 80; // px/s in art pixels
 
 let S = 3; // screen px per art px

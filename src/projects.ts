@@ -1,17 +1,15 @@
 export interface Project {
   title: string;
-  /** Shown in the book. A string, or an array of paragraphs for longer write-ups. */
+  /** A string, or an array of paragraphs. */
   description: string | string[];
-  /** Demo clip for the book's right page, e.g. "/projects/my-app/demo.mp4" (file in public/). */
-  video?: string;
+  /** Live site (the repo's "Website" field), or the repo itself if none is set. */
   url: string;
-  /** Lower comes first (leftmost building). */
-  order?: number;
-  /** Roof colour, e.g. "#4f7fc0". Default: picked from the title. */
-  roof?: string;
+  /** GitHub repo page. */
+  repo?: string;
+  /** Demo clip, proxied from a demo.mp4/webm in the repo root. */
+  video?: string;
 }
 
-// Every content/projects/*.json becomes a building. No code changes needed to add one.
-const files = import.meta.glob<Project>('../content/projects/*.json', { eager: true, import: 'default' });
-
-export const projects: Project[] = Object.values(files).sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+/** My public GitHub repos, via the server's cached /api/projects (see server/projects.js). */
+export const fetchProjects = (): Promise<Project[]> =>
+  fetch('/api/projects').then(r => (r.ok ? r.json() : []), () => []);

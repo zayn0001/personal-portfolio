@@ -1,5 +1,5 @@
 import './home.css';
-import { projects } from './projects';
+import { fetchProjects, type Project } from './projects';
 
 /** Tiny DOM helper: el('a', { href }, 'text', child) */
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, props: Partial<HTMLElementTagNameMap[K]> = {}, ...kids: (Node | string)[]) {
@@ -9,7 +9,13 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, props: Partial<HTMLEl
 }
 
 const list = document.getElementById('projects')!;
-projects.forEach((p, i) => {
+fetchProjects().then(projects => {
+  list.replaceChildren();
+  projects.forEach(render);
+  if (!projects.length) list.append(el('li', { className: 'empty' }, 'Nothing here yet. Check back soon.'));
+});
+
+function render(p: Project, i: number) {
   const [first, ...rest] = [p.description].flat().join('\n\n').split(/\n\s*\n/);
   const para = (t: string) => el('p', {}, t);
   const out = { href: p.url, target: '_blank', rel: 'noopener' };
@@ -21,7 +27,9 @@ projects.forEach((p, i) => {
       el('h3', {}, el('a', out, p.title)),
       el('div', { className: 'desc' }, para(first), ...(rest.length ? [el('details', {}, el('summary', {}, 'more'), ...rest.map(para))] : [])),
       ...(video ? [el('div', { className: 'media' }, video, el('span', { className: 'hint' }))] : []),
-      el('div', { className: 'links' }, el('a', out, 'visit ↗')),
+      el('div', { className: 'links' },
+        el('a', out, 'visit ↗'),
+        ...(p.repo && p.repo !== p.url ? [el('a', { href: p.repo, target: '_blank', rel: 'noopener' }, 'code ↗')] : [])),
     ),
   );
   if (video) {
@@ -31,7 +39,7 @@ projects.forEach((p, i) => {
     video.onplay = video.onpause = () => li.classList.toggle('playing', !video.paused);
   }
   list.append(li);
-});
+}
 
 // click a preview -> big video in a native <dialog>; Esc, ×, or a click on the backdrop closes it
 const lightbox = document.getElementById('lightbox') as HTMLDialogElement;

@@ -179,7 +179,7 @@ export function buildWorld(projects: Project[]) {
   const lampImg = lamp(), fenceImg = fence(), signImg = signpost();
   const buildings: Building[] = projects.map((project, i) => {
     const tx = 6 + i * 10, h = hash(project.title);
-    const roof = project.roof ?? ROOFS[h % ROOFS.length];
+    const roof = ROOFS[h % ROOFS.length];
     for (let y = 8; y <= 12; y++) for (let x = tx; x < tx + 7; x++) solid[at(x, y)] = 1;
     tiles[at(tx + 3, 13)] = tiles[at(tx + 3, 14)] = PATH;
     put(signImg, tx + 5, 13);
@@ -266,7 +266,7 @@ export function buildWorld(projects: Project[]) {
   for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) { m.fillStyle = ['#6cab3c', '#d6a86a', '#4a9fe0'][tiles[at(x, y)]]; m.fillRect(x * 3, y * 3, 3, 3); }
   m.fillStyle = '#2e6b2e';
   for (const p of props) if (p.img.height > 40) m.fillRect(Math.floor(p.x / T) * 3 - 1, (p.y / T - 1) * 3 - 1, 5, 5);
-  for (const b of buildings) { m.fillStyle = b.project.roof ?? ROOFS[hash(b.project.title) % ROOFS.length]; m.fillRect(b.tx * 3, 8 * 3, 21, 15); }
+  for (const b of buildings) { m.fillStyle = ROOFS[hash(b.project.title) % ROOFS.length]; m.fillRect(b.tx * 3, 8 * 3, 21, 15); }
 
   return {
     MW, MH, ground, mini, props, buildings,

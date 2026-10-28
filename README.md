@@ -37,7 +37,7 @@ My personal portfolio, in two flavours built from the same project data:
 |---|---|
 | Frontend | [Vite](https://vite.dev), TypeScript, Canvas 2D (no framework, no game engine) |
 | Backend | Node.js `http` + [`ws`](https://github.com/websockets/ws), one process serving the site and the live socket |
-| Content | One JSON file per project, loaded at build time with `import.meta.glob` |
+| Content | My public GitHub repos, read from the GitHub API by the server and cached |
 
 Runtime dependencies: just `ws`.
 
@@ -62,43 +62,41 @@ npm start          # serves dist/ and the socket on $PORT (default 8080)
 | `npm run dev` | Dev server with hot reload and the multiplayer socket |
 | `npm run build` | Type-check and build both pages |
 | `npm start` | Production server |
-| `npm test` | Unit tests for the server's HTTP range handling |
+| `npm test` | Unit tests: HTTP range handling and GitHub repo → project mapping |
 
 ## Adding a project
 
-Drop a JSON file in `content/projects/`. Both pages pick it up, and the town grows by one house.
+Projects come straight from my **public GitHub repos**, so adding one means publishing a repo. Each repo becomes a
+row on the home page and a house in the valley.
 
-```json
-{
-  "title": "My App",
-  "description": ["First paragraph.", "Second paragraph."],
-  "url": "https://my-app.example.com",
-  "video": "/projects/my-app/demo.mp4",
-  "order": 2,
-  "roof": "#4f7fc0"
-}
-```
+| On GitHub | Becomes |
+|---|---|
+| About → **Description** `Name — what it does` | Title `Name`, description `what it does` (an em dash, en dash or `\|` splits them). Without a separator, the title is the repo name tidied up (`my-cool-app` → "My Cool App") |
+| About → **Website** | "visit" / "Visit site" link (falls back to the repo) |
+| `demo.mp4` (or any `.mp4`/`.webm`) in the **repo root** | Preview video on the home page and in the valley's book |
+| The repo itself | "code" link |
 
-| Field | Required | |
+Skipped automatically: forks, archived repos, the `<username>/<username>` profile repo, and this site's repo.
+
+The server fetches everything once, on its first request, and serves it from memory after that, so visitors never touch
+GitHub's rate limit. **New or edited repos show up after the server restarts** (any deploy, or Render's free tier
+waking up from idle). Videos are streamed through the server (`/api/video/<repo>`) because GitHub serves raw files as
+`application/octet-stream`, which Safari won't play.
+
+| Env var | Default | |
 |---|---|---|
-| `title` | yes | Also seeds the house's look; rename to get a different house |
-| `description` | yes | A string, or an array of paragraphs |
-| `url` | yes | Opened by "visit" / "Visit site" |
-| `video` | no | Path to a file in `public/` (mp4 or webm). Keep it small, a few MB |
-| `order` | no | Lower comes first |
-| `roof` | no | Roof colour; defaults to one picked from the title |
-
-Videos live in `public/projects/<name>/`, e.g. `public/projects/my-app/demo.mp4` → `"video": "/projects/my-app/demo.mp4"`.
+| `GITHUB_USER` | `zayn0001` | Whose repos to list |
+| `PORTFOLIO_REPO` | `personal-portfolio` | This site's repo, excluded from the list |
+| `GITHUB_TOKEN` | – | Optional. Raises the API limit from 60 to 5,000 requests/hour |
 
 ## Project structure
 
 ```
-content/projects/   one JSON per project (the only thing you edit to add work)
-public/projects/    demo videos
 index.html          home page          → src/home.ts, src/home.css
 valley/index.html   the valley         → src/valley.ts (+ world.ts, sprites.ts, book.ts, live.ts, style.css)
-src/projects.ts     loads + sorts the JSON, shared by both pages
-server/             production server: static files (with range requests), live socket, tests
+src/projects.ts     fetches /api/projects, shared by both pages
+server/             production server: static files (with range requests), GitHub projects + video proxy
+                    (projects.js), live socket (live.js), tests
 ```
 
 ## Deployment

@@ -21,6 +21,7 @@ h2 { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacin
 #projects { list-style: none; margin: 0; padding: 0; }
 #projects li { display: grid; grid-template-columns: 56px 1fr; padding: 32px 0; border-top: 1px solid var(--line); }
 #projects li:last-child { border-bottom: 1px solid var(--line); }
+#projects li.empty { display: block; color: var(--muted); }
 .num { color: var(--muted); font-size: 13px; padding-top: 5px; }
 h3 { font-size: 20px; font-weight: 500; letter-spacing: -0.01em; margin: 0 0 10px; }
 h3 a { border: 0; }

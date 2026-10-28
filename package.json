@@ -7,7 +7,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "start": "node server/index.js",
-    "test": "node --test server/range.test.js"
+    "test": "node --test server/range.test.js server/projects.test.js"
   },
   "dependencies": {
     "ws": "^8.18.0"
